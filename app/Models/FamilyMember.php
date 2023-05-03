@@ -25,4 +25,9 @@ class FamilyMember extends Authenticatable
     {
         return $this->guard_name;
     }
+
+    public function sponser()
+    {
+        return $this->belongsTo(User::class,'sponsor_id','id');
+    }
 }

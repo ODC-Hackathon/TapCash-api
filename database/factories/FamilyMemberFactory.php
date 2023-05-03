@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,13 @@ class FamilyMemberFactory extends Factory
     {
         return [
             //
+            'name'=>$this->faker->name(),
+            'sponsor_id'=>User::factory(),
+            'user_name'=>$this->faker->unique()->name(),
+            'phone_number'=>'01102154877',
+            'password'=>'TabCash@2023',
+            'total_amount'=>$this->faker->numberBetween(100,900),
+            'percentage'=>$this->faker->numberBetween(1,10),
         ];
     }
 }

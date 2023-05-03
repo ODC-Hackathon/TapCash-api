@@ -35,19 +35,20 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
-    // public function authenticate(): void
-    // {
-    //     $this->ensureIsNotRateLimited();
-    //     $credentials = $this->only('user_name', 'password');
-    //     $member_token = $this->boolean('remember');
-    //     if (!Auth::attempt($credentials,$member_token) && !Auth::guard('api-family')->attempt($credentials,$member_token) ) {
-    //         RateLimiter::hit($this->throttleKey());
-    //         throw ValidationException::withMessages([
-    //             'username' => __('auth.failed'),
-    //         ]);
-    //     }
-    //     RateLimiter::clear($this->throttleKey());
-    // }
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+        $credentials = $this->only('user_name', 'password');
+        $member_token = $this->boolean('remember');
+        
+        if (!Auth::guard('api-users')->attempt($credentials,$member_token) && !Auth::guard('api-family')->attempt($credentials,$member_token) ) {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'username' => __('auth.failed'),
+            ]);
+        }
+        RateLimiter::clear($this->throttleKey());
+    }
 
     public function ensureIsNotRateLimited(): void
     {

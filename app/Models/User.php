@@ -60,6 +60,10 @@ class User extends Authenticatable implements Wallet
         return $this->hasOne(Card::class,'user_id','id');
     }
 
+    public function family()
+    {
+        return $this->hasMany(FamilyMember::class,'sponsor_id','id');
+    }
     public function getGuardNameForApiToken()
     {
         return $this->guard_name;

@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Laravel\Sanctum\Exceptions\MissingAbilityException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,4 +48,18 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+
+
+    public function render($request, Throwable $e)
+    {
+        if($e instanceof MissingAbilityException)
+        {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+
+        return parent::render($request,$e);
+    }
+
 }

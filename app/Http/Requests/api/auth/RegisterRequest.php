@@ -6,6 +6,8 @@ use App\Rules\PhonNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Rules\Password;
+
 class RegisterRequest extends FormRequest
 {
     /**
@@ -30,7 +32,13 @@ class RegisterRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users',
             'user_name'=>['required','string','unique:users,user_name'],
             'phone_number'=>['required',new PhonNumberRule()],
-            'password' => 'required|string|min:6|confirmed',
+            'password' => ['required',
+            Password::min(8)
+            ->mixedCase()
+            ->letters()
+            ->symbols()
+            ->uncompromised()
+            ],
         ];
     }
 

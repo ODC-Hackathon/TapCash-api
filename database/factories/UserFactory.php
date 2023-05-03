@@ -21,9 +21,9 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => 'TabCash@2023', // password
             'remember_token' => Str::random(10),
-            'phone_number'=>'01550781785',
+            'phone_number'=>'01550781783',
             'user_name'=>$this->faker->unique()->name(),
         ];
     }
