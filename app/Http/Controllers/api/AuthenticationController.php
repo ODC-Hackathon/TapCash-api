@@ -28,15 +28,32 @@ class AuthenticationController extends Controller
     }
     public function login (LoginRequest $request) {
 
-        $request->authenticate();
-        $user = Auth::user();
-        $user->tokens()->delete();
+        // $request->authenticate();
+        $credentials = $request->only('user_name', 'password');
+        if(Auth::guard('api-users')->attempt(['user_name'=>$request->user_name,'password'=>$request->password]) )
+        {
+            $user = Auth::guard('api-users')->user();
+            $token = $user->createToken('Laravel Password Grant Client',['api-users'])->plainTextToken;
+            return response([
+                'data'=>$user,
+                'token'=>  $token,
+            ],200);
+        }
+        elseif(Auth::guard('api-family')->attempt(['user_name'=>$request->user_name,'password'=>$request->password]))
+        {
+            // $user = $request->user('api-family');
+            $user = Auth::guard('api-family')->user();
+            $token = $user->createToken('Laravel Password Grant Client',['api-family'])->plainTextToken;
+            return response([
+                'data'=>$user,
+                'token'=>  $token,
+            ],200);
+        }
+        return response(['username' => __('auth.failed')],400);
 
-        $token = Auth::user()->createToken('Laravel Password Grant Client')->plainTextToken;
-        return response([
-            'data'=>$user,
-            'token'=>  $token,
-        ],200);
+        // $user->tokens()->delete();
+
+
     }
 
     public function logout (Request $request) {

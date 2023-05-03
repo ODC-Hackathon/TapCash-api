@@ -14,6 +14,7 @@ class User extends Authenticatable implements Wallet
 {
     use HasApiTokens, HasFactory, Notifiable,HasWallet;
 
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,7 +27,7 @@ class User extends Authenticatable implements Wallet
         'phone_number',
         'user_name'
     ];
-
+    protected $guard ='api-users';
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -50,5 +51,17 @@ class User extends Authenticatable implements Wallet
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+
+    public function card()
+    {
+
+        return $this->hasOne(Card::class,'user_id','id');
+    }
+
+    public function getGuardNameForApiToken()
+    {
+        return $this->guard_name;
     }
 }

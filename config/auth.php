@@ -40,9 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'api' => [
-            'driver' => 'sanctum',
+        'api-users' => [
+            'driver' => 'session',
             'provider' => 'users',
+            'hash' => false,
+        ],
+        'api-family' => [
+            'driver' => 'session',
+            'provider' => 'family_members',
             'hash' => false,
         ],
     ],
@@ -70,10 +75,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'family_members' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\FamilyMember::class,
+        ],
     ],
 
     /*
