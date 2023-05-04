@@ -11,7 +11,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Bavix\Wallet\Traits\HasWallet;
 use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
-class User extends Authenticatable implements Wallet
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+class User extends Authenticatable implements Wallet,MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable,HasWallet;
 

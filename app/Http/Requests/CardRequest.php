@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CardRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class CardRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::guard('api-users')->check() == true ? true :false;
     }
 
     /**
@@ -25,7 +26,7 @@ class CardRequest extends FormRequest
     {
         return [
             //
-            'type'=>['required']
+            'type'=>['required','in:Visa,MasterCard,American Express']
         ];
     }
 }

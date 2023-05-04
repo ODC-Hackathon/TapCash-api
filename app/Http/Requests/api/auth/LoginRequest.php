@@ -40,8 +40,15 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
         $credentials = $this->only('user_name', 'password');
         $member_token = $this->boolean('remember');
-        
-        if (!Auth::guard('api-users')->attempt($credentials,$member_token) && !Auth::guard('api-family')->attempt($credentials,$member_token) ) {
+        $attempeted = false;
+        if($this->type == 'user')
+        {
+            $attempeted = Auth::guard('api-users')->attempt($credentials,$member_token);
+        }elseif($this->type == 'family')
+        {
+            $attempeted = Auth::guard('api-family')->attempt($credentials,$member_token);
+        }
+        if ($attempeted == false) {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'username' => __('auth.failed'),

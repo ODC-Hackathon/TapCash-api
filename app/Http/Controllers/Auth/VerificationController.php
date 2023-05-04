@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
+    use MustVerifyEmail;
     /*
     |--------------------------------------------------------------------------
     | Email Verification Controller
@@ -26,7 +29,7 @@ class VerificationController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/api/email/verified';
 
     /**
      * Create a new controller instance.
@@ -38,5 +41,14 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+    public function verify(Request $request)
+    {
+        if ($request->route('id') == $request->user()->getKey() &&
+            $request->user()->markEmailAsVerified()) {
+            return response()->json(['message' => 'Email successfully verified.']);
+        }
+
+        return response()->json(['message' => 'Invalid verification link.']);
     }
 }
