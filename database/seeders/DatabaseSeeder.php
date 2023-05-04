@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-
+use Illuminate\Support\Str;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -33,5 +33,15 @@ class DatabaseSeeder extends Seeder
             // \App\Models\Payment_Method_Type::factory()->create([
             //     'name' => 'VisaCard',
             // ]);
+            \App\Models\User::factory()->create([
+                'name' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'email_verified_at' => now(),
+                'password' => 'TabCash@2023', // password
+                'remember_token' => Str::random(10),
+                'phone_number'=>'01550781783',
+                'user_name'=>fake()->unique()->name(),
+            ]);
+
     }
 }
