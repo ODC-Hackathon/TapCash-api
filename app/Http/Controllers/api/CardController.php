@@ -35,10 +35,12 @@ class CardController extends Controller
     }
     public function get_card(Request $request)
     {
+
         $card = $request->user()->card;
 
+
         $data=array(
-            'data'=>$card
+            'data'=>$card ?? 'no Card available now'
         );
         return response($data,200);
     }
