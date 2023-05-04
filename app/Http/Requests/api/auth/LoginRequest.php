@@ -33,6 +33,7 @@ class LoginRequest extends FormRequest
         return [
             'user_name' => ['required', 'string'],
             'password' => ['required', 'string'],
+            'type'=>['required','string'],
         ];
     }
     public function authenticate(): void

@@ -7,16 +7,11 @@ use App\Http\Requests\api\auth\LoginRequest;
 use App\Http\Requests\api\auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Rules\PhonNumberRule;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class AuthenticationController extends Controller
 {

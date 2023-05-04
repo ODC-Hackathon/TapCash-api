@@ -3,8 +3,13 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Laravel\Sanctum\Exceptions\MissingAbilityException;
+use Mockery\VerificationExpectation;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
@@ -62,9 +67,21 @@ class Handler extends ExceptionHandler
         }
 
 
-        if($e instanceof NotFoundHttpException){
+        if($e instanceof NotFoundHttpException)
+        {
             return response()->json(['Message'=>'You are trying  access data not found'],404);
         }
+
+        if($e instanceof HttpException && $e->getMessage() === 'Your email address is not verified.')
+        {
+            return response()->json(['Message'=>'Your Email Must be Verified first'],403);
+        }
+
+        if($e instanceof HttpException)
+        {
+            return response()->json(['Message'=>'something went wrong please Contact with admin'],500);
+        }
+
         return parent::render($request,$e);
     }
 
