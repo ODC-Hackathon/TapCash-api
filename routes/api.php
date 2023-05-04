@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
 Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('/profiles',[AuthenticationController::class,'get_users'])->name('get.users');
 
@@ -17,6 +16,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('/register',[AuthenticationController::class,'register'])->middleware('guest')->name('register.api');
 
 });
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticationController::class,'logout'])->name('logout.api');
 

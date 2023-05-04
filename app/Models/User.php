@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Bavix\Wallet\Traits\HasWallet;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 class User extends Authenticatable implements Wallet
 {
     use HasApiTokens, HasFactory, Notifiable,HasWallet;
@@ -67,5 +68,10 @@ class User extends Authenticatable implements Wallet
     public function getGuardNameForApiToken()
     {
         return $this->guard_name;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

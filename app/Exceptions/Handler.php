@@ -2,8 +2,11 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Laravel\Sanctum\Exceptions\MissingAbilityException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -59,6 +62,9 @@ class Handler extends ExceptionHandler
         }
 
 
+        if($e instanceof NotFoundHttpException){
+            return response()->json(['Message'=>'You are trying  access data not found'],404);
+        }
         return parent::render($request,$e);
     }
 
