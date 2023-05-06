@@ -9,9 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-Route::group(['middleware' => ['cors', 'json.response']], function ()
+Route::group(['middleware' => ['cors','json.response']], function ()
 {
-
     Route::post('/profiles',[AuthenticationController::class,'get_users'])->name('get.users');
     Route::post('/login', [AuthenticationController::class,'login'])->name('login.api');
     Route::post('/register',[AuthenticationController::class,'register'])->middleware('guest')->name('register.api');
@@ -19,14 +18,14 @@ Route::group(['middleware' => ['cors', 'json.response']], function ()
     Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
     ->middleware(['signed', 'throttle:3,1'])
     ->name('verification.verify');
-
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum','json.response'])->group(function () {
     Route::post('/logout', [AuthenticationController::class,'logout'])->name('logout.api');
 
     Route::group(['middleware'=>'abilities:api-users'],function(){
-        Route::post('/card/generate',[CardController::class,'generate'])->name('generate.card');
+        Route::post('/card/generate',[CardController::class,'create'])
+        ->name('generate.card');
         Route::get('/card',[CardController::class,'get_card'])->name('get.card');
         Route::post('/email/verify/resend', function (Request $request) {
             $request->user()->sendEmailVerificationNotification();
@@ -37,6 +36,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
+    Route::get('/test',function(){
+        return Auth::guard('api-users')->check();
+    });
     Route::group(['middleware'=>'abilities:api-family'],function(){
             Route::get('/test/family',function(Request $request){
                 return $request->user();

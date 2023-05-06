@@ -65,7 +65,8 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
 
     public function family()
     {
-        return $this->hasMany(FamilyMember::class,'sponsor_id','id');
+        return $this->hasMany(FamilyMember::class,'sponsor_id','id')
+        ->select('user_name','name','sponsor_id');
     }
     public function getGuardNameForApiToken()
     {

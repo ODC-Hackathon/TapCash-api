@@ -43,5 +43,14 @@ class DatabaseSeeder extends Seeder
                 'user_name'=>fake()->unique()->name(),
             ]);
 
+            $this->Fill_category();
+
+    }
+    protected function Fill_category()
+    {
+        // App\Models\Category::create([
+        //     'name'=>fake()->name(),
+        //     'description' =>
+        // ]);
     }
 }
