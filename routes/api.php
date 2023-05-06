@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\api\AuthenticationController;
 use App\Http\Controllers\api\CardController;
 use App\Http\Controllers\api\FamilyController;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['cors','json.response']], function ()
 {
-    Route::post('/profiles',[AuthenticationController::class,'get_users'])->name('get.users');
+    Route::post('/profiles',[AccountController::class,'profiles'])->name('get.profiles');
     Route::post('/login', [AuthenticationController::class,'login'])->name('login.api');
     Route::post('/register',[AuthenticationController::class,'register'])->middleware('guest')->name('register.api');
 
@@ -19,7 +20,6 @@ Route::group(['middleware' => ['cors','json.response']], function ()
     ->middleware(['signed', 'throttle:3,1'])
     ->name('verification.verify');
 });
-
 Route::middleware(['auth:sanctum','json.response'])->group(function () {
     Route::post('/logout', [AuthenticationController::class,'logout'])->name('logout.api');
 
@@ -39,6 +39,7 @@ Route::middleware(['auth:sanctum','json.response'])->group(function () {
     Route::get('/test',function(){
         return Auth::guard('api-users')->check();
     });
+
     Route::group(['middleware'=>'abilities:api-family'],function(){
             Route::get('/test/family',function(Request $request){
                 return $request->user();

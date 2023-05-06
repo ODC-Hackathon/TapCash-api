@@ -12,7 +12,7 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
-    
+
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
@@ -50,6 +50,11 @@ return [
             'provider' => 'family_members',
             'hash' => false,
         ],
+        'accounts' => [
+            'driver' => 'session',
+            'provider' => 'accounts',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -79,6 +84,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\FamilyMember::class,
         ],
+        'accounts'=>[
+            'driver'=>'eloquent',
+            'model' => App\Models\Account::class,
+        ]
     ],
 
     /*

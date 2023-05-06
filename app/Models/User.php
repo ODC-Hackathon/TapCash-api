@@ -77,4 +77,9 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    public function account()
+    {
+        return $this->hasOne(Account::class,'user_id','id');
+    }
 }
