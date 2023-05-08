@@ -18,8 +18,6 @@ class FamilyController extends BaseController
 
     public function CreateService(FamilyServiceRequest $request)
     {
-
-
         try
         {
             $member = FamilyMember::where('user_name',$request->user_name)->first();
@@ -34,16 +32,16 @@ class FamilyController extends BaseController
             ]);
 
             $notification = UserNotification::create([
-                'message' => $member->user_name  . ' has bought new '.$service->name .' At '. now()->format('d-m-y'),
+                'message' => $member->user_name  . ' has bought new '.$service->name . ' with $' . abs($transaction->amount)  .' At '. now()->format('d-m-y'),
                 'type' =>'purchased',
                 'user_id' => $member->sponser->id,
                 'transaction_id'=>$transaction->id,
             ]);
 
             $notification = UserNotification::create([
-                'message' => 'You have purchased '.$service->name .' At '. now()->format('d-m-y'),
+                'message' => 'You have purchased '.$service->name . ' with $' . abs($transaction->amount)  .' At '. now()->format('d-m-y'),
                 'type' =>'purchased',
-                'family_id' => $member->id,
+                'familymember_id' => $member->id,
                 'transaction_id'=>$transaction->id,
             ]);
 
@@ -69,5 +67,10 @@ class FamilyController extends BaseController
         {
             return $this->error($e->getMessage());
         }
+    }
+
+    public function get_notifications(Request $request)
+    {
+        FamilyMember::where('id',$request->user()->id)->first();
     }
 }

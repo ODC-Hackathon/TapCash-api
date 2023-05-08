@@ -10,6 +10,6 @@ class NotificationController extends BaseController
     //
     public function index(Request $request)
     {
-        return $request->user()->notifications;
+        return $this->success($request->user()->notifications);
     }
 }

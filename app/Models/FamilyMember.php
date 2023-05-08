@@ -46,6 +46,7 @@ class FamilyMember extends Authenticatable
     {
         return $this
         ->hasMany(TransactionDetail::class,'familymember_id','id')
+        ->select('id','transaction_id','type','subcategory_id','familymember_id')
         ->with(['transaction' => function($query){
             $query->select('id','amount','type');
         },'subcategory' => function($query){

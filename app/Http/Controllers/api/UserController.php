@@ -93,4 +93,21 @@ class UserController extends BaseController
         }
 
     }
+
+
+    public function get_member_transaction(Request $request,FamilyMember $member)
+    {
+        try
+        {
+            $transactions = $member->with(['transaction_details'])
+            ->select('id','user_name')
+            ->first();
+            return $this->success($transactions);
+        }catch(Exception $e)
+        {
+            return $this->error($e->getMessage());
+        }
+
+        return $transactions;
+    }
 }

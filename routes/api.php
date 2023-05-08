@@ -51,7 +51,7 @@ Route::group(['middleware' => ['cors','json.response']], function ()
             Route::post('/user/pay-service',[UserController::class,'createservice']);
 
             Route::get('user/transactions',[UserController::class,'get_Transactions']);
-
+            Route::get('family/{member:user_name}/transactions',[UserController::class,'get_member_transaction']);
             Route::get('/balance',function(Request $request){
                 $user = User::find($request->user()->id);
                 // $user->deposit(1000,['method'=>'test']);
@@ -77,6 +77,7 @@ Route::group(['middleware' => ['cors','json.response']], function ()
         Route::group(['middleware'=>['abilities:api-family','family']],function(){
             Route::post('family/pay-service',[FamilyController::class,'CreateService']);
             Route::get('family/transactions',[FamilyController::class,'get_Transactions']);
+            Route::get('family/notifications',[NotificationController::class,'index']);
         });
 
     });
