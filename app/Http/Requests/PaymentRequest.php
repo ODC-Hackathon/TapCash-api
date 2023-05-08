@@ -15,7 +15,7 @@ class PaymentRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check() == true ? true : false ;
+        return Auth::guard('api-users')->check() == true ? true : false ;
     }
 
     /**
@@ -26,12 +26,16 @@ class PaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            //
             'type' => ['required'],
             'card_no'=>['required_if:type,Visa','size:16'],
             'cvv'=>['required_if:type,Visa','size:3'],
             'expiration_date'=>['required_if:type,Visa','date'],
-            'phone_number'=>['required_unless:type,Visa',new PhonNumberRule()]
+            'phone_number'=>
+            [
+                'required_unless:type,Request,Visa',new PhonNumberRule(),
+            ],
+            'user_name' =>['required_if:type,Request','exists:users,user_name'],
+            'amount'=>['required','numeric','min:1'],
         ];
     }
 }

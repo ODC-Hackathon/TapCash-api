@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Payment_Method_Type extends Model
+class PaymentMethodType extends Model
 {
     use HasFactory;
     protected $fillable = ['name'];
+    protected $hidden = ['created_at','updated_at','id'];
 }

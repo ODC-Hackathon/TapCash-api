@@ -40,7 +40,7 @@ class CardExpireRemoveJob implements ShouldQueue
         foreach($cards as $card)
         {
             $current_date = Carbon::now();
-            $card_expiration_date = Crypt::decryptString($card->expiration_date);
+            $card_expiration_date = $card->expiration_date;
             if($card_expiration_date < $current_date)
             {
                 $card->delete();

@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Models\Card;
 use App\Models\User;
 use App\Policies\CardPolicy;
+use App\Policies\NotificationPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -21,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Card::class => CardPolicy::class,
         User::class => UserPolicy::class,
+        UserNotification::class => NotificationPolicy::class,
     ];
 
     /**

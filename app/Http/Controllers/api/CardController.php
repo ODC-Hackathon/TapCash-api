@@ -28,7 +28,7 @@ class CardController extends BaseController
 
         $card = Card::where('user_id',$request->user()->id)
         ->get();
-        
+
         if(count($card) != 0)
             return $this->success(new CardResource($card));
 

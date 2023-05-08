@@ -20,10 +20,10 @@ class CardResource extends ResourceCollection
         foreach($this->collection as $card)
         {
                 array_push($cards,[
-                    'card_no' =>Crypt::decryptString($card->card_no),
-                    'type' =>Crypt::decryptString($card->type),
-                    'cvv'=>Crypt::decryptString($card->cvv),
-                    'expiration_date'=> Carbon::parse(Crypt::decryptString($card->expiration_date))->format('d-m-y'),
+                    'card_no' =>$card->card_no,
+                    'type' =>$card->type,
+                    'cvv'=>$card->cvv,
+                    'expiration_date'=>Carbon::parse($card->expiration_date)->format('d-m-y'),
                 ]);
         }
         return $cards;

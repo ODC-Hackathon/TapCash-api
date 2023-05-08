@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AccountVerified;
+use App\Http\Middleware\FamilyMiddleware;
+use App\Http\Middleware\UserMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -70,5 +73,8 @@ class Kernel extends HttpKernel
         'cors' => \App\Http\Middleware\Cors::class,
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+        'users'=> UserMiddleware::class,
+        'family'=> FamilyMiddleware::class,
+        'account.verify'=>AccountVerified::class,
     ];
 }

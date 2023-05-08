@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Wallet\TransactionService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +16,11 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->app->bind(
+            TransactionServiceInterface::class,
+            TransactionService::class
+        );
+
     }
 
     /**

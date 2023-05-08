@@ -10,7 +10,11 @@ class FamilyMember extends Authenticatable
 {
     use HasApiTokens,HasFactory;
     protected $guard ='api-family';
-    protected $fillable=['name','sponsor_id','user_name','phone_number','password','total_amount','percentage'];
+    protected $fillable=
+    [
+        'name','sponsor_id','user_name','phone_number','total_amount','percentage',
+        'pincode',
+    ];
     protected $hidden = [
         'password',
         'remember_token',
@@ -29,5 +33,10 @@ class FamilyMember extends Authenticatable
     public function sponser()
     {
         return $this->belongsTo(User::class,'sponsor_id','id');
+    }
+
+    public function setPincodeAttribute($value)
+    {
+        $this->attributes['pincode'] = bcrypt($value);
     }
 }

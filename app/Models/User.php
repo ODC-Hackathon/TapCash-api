@@ -5,17 +5,20 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Bavix\Wallet\Interfaces\Wallet;
+use Bavix\Wallet\Interfaces\WalletFloat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Traits\HasWalletFloat;
 use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Crypt;
 
-class User extends Authenticatable implements Wallet,MustVerifyEmail
+class User extends Authenticatable implements Wallet,WalletFloat,MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable,HasWallet;
+    use HasApiTokens, HasFactory, Notifiable,HasWalletFloat;
 
 
     /**
@@ -28,7 +31,9 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
         'email',
         'password',
         'phone_number',
-        'user_name'
+        'user_name',
+        'pincode',
+        'SSN'
     ];
     protected $guard ='api-users';
     /**
@@ -39,6 +44,7 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
     ];
 
     /**
@@ -55,14 +61,24 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
     {
         $this->attributes['password'] = bcrypt($value);
     }
-
+    public function setPincodeAttribute($value)
+    {
+        $this->attributes['pincode'] = bcrypt($value);
+    }
 
     public function card()
     {
-
         return $this->hasOne(Card::class,'user_id','id');
     }
 
+    public function setSNNAttribute($value)
+    {
+        $this->attributes['SNN'] = Crypt::encryptString($value);
+    }
+    public function getSNNAttribute($value)
+    {
+        return  Crypt::decryptString($value);
+    }
     public function family()
     {
         return $this->hasMany(FamilyMember::class,'sponsor_id','id')
@@ -81,5 +97,12 @@ class User extends Authenticatable implements Wallet,MustVerifyEmail
     public function account()
     {
         return $this->hasOne(Account::class,'user_id','id');
+    }
+
+    public function notifications()
+    {
+        return
+        $this->hasMany(UserNotification::class,'user_id','id')
+        ->select('message','type');
     }
 }
