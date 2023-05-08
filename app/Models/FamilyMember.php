@@ -12,7 +12,9 @@ class FamilyMember extends Authenticatable
     protected $guard ='api-family';
     protected $fillable=
     [
-        'name','sponsor_id','user_name','phone_number','total_amount','percentage',
+        'name','sponsor_id'
+        ,'user_name','phone_number','total_amount','percentage',
+        'family_id',
         'pincode',
     ];
     protected $hidden = [
@@ -38,5 +40,23 @@ class FamilyMember extends Authenticatable
     public function setPincodeAttribute($value)
     {
         $this->attributes['pincode'] = bcrypt($value);
+    }
+
+    public function transaction_details()
+    {
+        return $this
+        ->hasMany(TransactionDetail::class,'familymember_id','id')
+        ->with(['transaction' => function($query){
+            $query->select('id','amount','type');
+        },'subcategory' => function($query){
+            $query->select('name','category_id','id');
+        }]);
+    }
+
+    public function notifications()
+    {
+        return
+        $this->hasMany(UserNotification::class,'family_id','id')
+        ->select('message','type');
     }
 }

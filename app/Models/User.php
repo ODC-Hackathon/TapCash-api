@@ -105,4 +105,14 @@ class User extends Authenticatable implements Wallet,WalletFloat,MustVerifyEmail
         $this->hasMany(UserNotification::class,'user_id','id')
         ->select('message','type');
     }
+    public function transaction_details()
+    {
+        return $this
+        ->hasMany(TransactionDetail::class,'user_id','id')
+        ->with(['transaction' => function($query){
+            $query->select('id','amount','type');
+        },'subcategory' => function($query){
+            $query->select('name','category_id','id');
+        }]);
+    }
 }

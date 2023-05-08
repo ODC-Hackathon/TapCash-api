@@ -20,20 +20,24 @@ class AccountVerified
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
+        $message = [
+            'message'=>'please Verify your account email'
+        ];
+        $status = 400 ;
         if($user InstanceOf Account)
         {
             if(!$user->hasVerifiedEmail())
-                return response()->json(['message'=>'please Verify your account email']);
+                return response()->json(['errors'=>$message],$status);
         }
         elseif($user InstanceOf User)
         {
             if(!$user->account->hasVerifiedEmail())
-                return response()->json(['message'=>'please Verify your account email']);
+                return response()->json(['errors'=>$message],$status);
         }
         elseif($user InstanceOf FamilyMember)
         {
             if(!$user->sponser->account->hasVerifiedEmail())
-                return response()->json(['message'=>'please Verify your account email']);
+                return response()->json(['errors'=>$message],$status);
         }
         return $next($request);
     }

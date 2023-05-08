@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|min:6',
+            'name' => 'required|string|max:255|min:3',
             'email' => 'required|string|email|max:255|unique:users',
             'user_name'=>['required','string','unique:users,user_name','min:6'],
             'phone_number'=>['required',new PhonNumberRule(),'unique:users,phone_number'],
@@ -52,8 +52,8 @@ class RegisterRequest extends FormRequest
 
             'message'   => 'Validation errors',
 
-            'data'      => $validator->errors()
+            'errors'      => $validator->errors()
 
-        ]),400);
+        ],400));
     }
 }

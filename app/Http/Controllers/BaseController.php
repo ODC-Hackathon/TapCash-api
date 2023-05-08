@@ -22,9 +22,10 @@ class BaseController extends Controller
     public function error($message,$status=404)
     {
 
-
         return response()->json([
-            'message' =>$message
+            'errors' =>array([
+                'message' => $message
+            ])
         ],$status);
     }
 }

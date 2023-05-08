@@ -2,79 +2,72 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\api\FamilyServiceRequest;
 use App\Http\Requests\StoreFamilyRequest;
 use App\Models\FamilyMember;
+use App\Models\SubCategory;
+use App\Models\TransactionDetail;
+use App\Models\UserNotification;
+use Exception;
 use Illuminate\Http\Request;
 
-class FamilyController extends Controller
+class FamilyController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function CreateService(FamilyServiceRequest $request)
     {
-        //
+
+
+        try
+        {
+            $member = FamilyMember::where('user_name',$request->user_name)->first();
+            $service = SubCategory::find($request->service);
+            $transaction  = $member->sponser->withdraw(50);
+
+            $transaction_detail = TransactionDetail::create([
+                'type'=>$service->name,
+                'transaction_id'=>$transaction->id,
+                'subcategory_id'=>$request->service,
+                'familymember_id' => $member->id,
+            ]);
+
+            $notification = UserNotification::create([
+                'message' => $member->user_name  . ' has bought new '.$service->name .' At '. now()->format('d-m-y'),
+                'type' =>'purchased',
+                'user_id' => $member->sponser->id,
+                'transaction_id'=>$transaction->id,
+            ]);
+
+            $notification = UserNotification::create([
+                'message' => 'You have purchased '.$service->name .' At '. now()->format('d-m-y'),
+                'type' =>'purchased',
+                'family_id' => $member->id,
+                'transaction_id'=>$transaction->id,
+            ]);
+
+            return $this->success(null);
+        }catch(Exception $e)
+        {
+            return $this->error($e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreFamilyRequest $request)
+    public function get_Transactions(Request $request)
     {
-        //
-        $family_member=  FamilyMember::create([
-            'name'=>$request->name,
-            'sponsor_id'=>$request->user()->id,
-            'phone_number'=>$request->phone_number,
-            'password'=>$request->password,
-            'percentage'=>$request->percentage,
-            'user_name'=>$request->user_name
-        ]);
+        try
+        {
+            $user = $request->user();
+            $transactions = FamilyMember::where('id',$user->id)
+            ->with(['transaction_details'])
+            ->select('id','user_name')
+            ->first();
 
-
-        return response([
-            'data'=>$family_member,
-            'message'=>'data has been stored successfully'
-        ],200);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            return $this->success($transactions);
+        }catch(Exception $e)
+        {
+            return $this->error($e->getMessage());
+        }
     }
 }

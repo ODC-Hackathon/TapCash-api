@@ -19,7 +19,6 @@ class AccountFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password'=>'TabCash@2023',
             'remember_token' => Str::random(10),

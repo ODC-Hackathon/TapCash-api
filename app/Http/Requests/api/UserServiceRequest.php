@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\api;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class CardRequest extends FormRequest
+class UserServiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class CardRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::guard('api-users')->check() == true ? true :false;
+        return Auth::guard('api-users')->check() ? true : false;
     }
 
     /**
@@ -25,7 +25,9 @@ class CardRequest extends FormRequest
     public function rules()
     {
         return [
-            'type'=>['required','in:Visa,MasterCard,American Express']
+            'service' =>['required','exists:sub_categories,id'],
+            'amount' => ['required','numeric'],
+            'user_name'=>['required','exists:users,user_name'],
         ];
     }
 }

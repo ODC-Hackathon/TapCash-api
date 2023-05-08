@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Services\Wallet\TransactionService;
 use Bavix\Wallet\Internal\Assembler\AvailabilityDtoAssembler;
 use Bavix\Wallet\Internal\Assembler\BalanceUpdatedEventAssembler;
 use Bavix\Wallet\Internal\Assembler\ExtraDtoAssembler;
@@ -48,7 +49,7 @@ use Bavix\Wallet\Services\PrepareService;
 use Bavix\Wallet\Services\PurchaseService;
 use Bavix\Wallet\Services\RegulatorService;
 use Bavix\Wallet\Services\TaxService;
-use Bavix\Wallet\Services\TransactionService;
+// use Bavix\Wallet\Services\TransactionService;
 use Bavix\Wallet\Services\TransferService;
 use Bavix\Wallet\Services\WalletService;
 

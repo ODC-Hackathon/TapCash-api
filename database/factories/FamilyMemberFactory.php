@@ -24,6 +24,7 @@ class FamilyMemberFactory extends Factory
             'user_name'=>$this->faker->unique()->name(),
             'phone_number'=>'01102154877',
             'password'=>'TabCash@2023',
+            'pincode' => '4888',
             'total_amount'=>$this->faker->numberBetween(100,900),
             'percentage'=>$this->faker->numberBetween(1,10),
         ];

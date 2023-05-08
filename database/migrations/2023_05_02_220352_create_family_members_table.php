@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('percentage',5,2);
             $table->decimal('total_amount',10,2)->nullable();
-            $table->string('password');
+            $table->string('pincode');
+            // $table->unique(['user_name','sponsor_id']);
             $table->rememberToken();
             $table->timestamps();
         });

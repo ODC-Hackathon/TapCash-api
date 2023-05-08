@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Payment_Method_Type>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PaymentMethodType>
  */
-class Payment_Method_TypeFactory extends Factory
+class PaymentMethodTypeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,7 @@ class Payment_Method_TypeFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->name(),
+            'name'=>$this->faker->unique()->name(),
         ];
     }
 }
