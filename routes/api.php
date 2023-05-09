@@ -34,6 +34,7 @@ Route::group(['middleware' => ['cors','json.response']], function ()
             Route::post('/login', [AuthenticationController::class,'login'])
             ->name('login.api');
         });
+
         Route::group(['middleware'=>['abilities:api-users','users']],function(){
             Route::post('/card/generate',[CardController::class,'create'])
             ->name('generate.card');
@@ -82,18 +83,8 @@ Route::group(['middleware' => ['cors','json.response']], function ()
         });
 
     });
-
-
-
-
-
-
-
-
-
-
-
 });
+
 
 
 Route::middleware(['auth:sanctum','json.response'])->group(function ()
