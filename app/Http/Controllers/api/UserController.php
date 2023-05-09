@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\api\UpdateUserAccountData;
 use App\Http\Requests\api\UserServiceRequest;
 use App\Http\Requests\CreateFamilyMember;
 use App\Models\FamilyMember;
@@ -13,12 +14,11 @@ use App\Models\User;
 use App\Models\UserNotification;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends BaseController
 {
-    //
-
-
     public function get_users(Request $request)
     {
         $users = User::select('user_name')->get();
@@ -114,6 +114,50 @@ class UserController extends BaseController
     public function getBalance(Request $request)
     {
         return $this->success($request->user->balance);
+    }
+
+
+    public function get_UserData(Request $request)
+    {
+        try
+        {
+            $user = User::where('id',$request->user()->id)
+            ->select('name','email','phone_number')
+            ->first();
+            return $this->success($user);
+        }catch(Exception $e)
+        {
+            return $this->error($e->getMessage());
+        }
+    }
+
+    public function update_user_accountData(UpdateUserAccountData $request,User $user)
+    {
+        if(!Hash::check($request->password,$user->account->password))
+            return $this->error('Incorrect password');
+        try
+        {
+            if($request->email !== $user->email)
+            {
+                $user->account->forceFill([
+                    'email'=> $request->email,
+                    'email_verified_at' =>null
+                ])->save();
+                $user->account->sendEmailVerificationNotification();
+            }
+            $user->name = $request->name;
+            $user->phone_number = $request->phone_number;
+            $user->email = $request->email;
+            $user->save();
+
+            return $this->success([
+                'message' => 'Informations has been updated successfully'
+            ]);
+
+        }catch(Exception $e)
+        {
+            return $this->error($e->getMessage());
+        }
     }
 
 }

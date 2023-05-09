@@ -44,7 +44,9 @@ class AuthenticationController extends BaseController
             $response =
                 [
                     'token' => $token,
-                    'user'=>User::where('id',$user->id)->select('user_name','email','phone_number','name')->get()
+                    'user'=>User::where('id',$user->id)
+                    ->select('id','user_name','email','phone_number','name')
+                    ->get()
                 ];
             event(new Registered($account));
             $status =200;
@@ -79,7 +81,9 @@ class AuthenticationController extends BaseController
         $user->tokens()?->delete();
         return  array([
             'user'=>
-                    $user->where('id',$user->id)->select('user_name','phone_number','name')->get(),
+                    $user
+                    ->where('id',$user->id)
+                    ->select('user_name','phone_number','name','id')->get(),
             'token'=>
                     $user->createToken('Laravel Password Grant Client',[$guard])
                     ->plainTextToken
@@ -97,7 +101,8 @@ class AuthenticationController extends BaseController
         return New UserResource($sponser);
     }
 
-    public function logout (Request $request) {
+    public function logout (Request $request)
+    {
         $request->user()->tokens()->delete();
         Auth::guard('api-family')->logout();
 

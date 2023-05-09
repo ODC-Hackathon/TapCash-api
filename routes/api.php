@@ -8,6 +8,7 @@ use App\Http\Controllers\api\NotificationController;
 use App\Http\Controllers\api\PaymentController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\VerifyEmailController;
+use App\Models\Account;
 use App\Models\User;
 use App\Services\Wallet\TransactionService;
 use Bavix\Wallet\Models\Transaction;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['cors','json.response']], function ()
 {
     Route::post('/profiles',[AccountController::class,'profiles'])
+    ->middleware('account.verify')
     ->name('get.profiles');
 
     Route::post('/register',[AuthenticationController::class,'register'])
@@ -54,6 +56,9 @@ Route::group(['middleware' => ['cors','json.response']], function ()
             Route::get('user/transactions',[UserController::class,'get_Transactions']);
             Route::get('family/{member:user_name}/transactions',[UserController::class,'get_member_transaction']);
             Route::get('/user/balance',[UserController::class,'getBalance']);
+            Route::get('/user',[UserController::class,'get_UserData']);
+            Route::put('/user/{user:id}',[UserController::class,'update_user_accountData']);
+
             // Route::get('/balance',function(Request $request){
             //     $user = User::find($request->user()->id);
             //     // $user->deposit(1000,['method'=>'test']);
@@ -92,15 +97,11 @@ Route::middleware(['auth:sanctum','json.response'])->group(function ()
 
     Route::post('/logout', [AuthenticationController::class,'logout'])
     ->name('logout.api');
-
-    Route::group(['middleware'=>'abilities:api-users'],function()
-    {
-
-        Route::post('/email/verify/resend', function (Request $request) {
-            $request->user()->sendEmailVerificationNotification();
-            return response()->json(['message'=>'email has been sent'],200);
-        })->middleware(['throttle:3,1'])->name('verification.send');
-
-    });
 });
 
+Route::post('/email/verify/resend', function (Request $request){
+    return $request->only('errors');
+    $account = Account::find($request->id);
+    $account->sendEmailVerificationNotification();
+    return response()->json(['data'=>['message'=>'email has been sent']],200);
+})->middleware(['throttle:3,1'])->name('api.verification.send');

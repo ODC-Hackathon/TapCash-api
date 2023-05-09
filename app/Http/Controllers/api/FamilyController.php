@@ -73,4 +73,5 @@ class FamilyController extends BaseController
     {
         FamilyMember::where('id',$request->user()->id)->first();
     }
+    
 }
