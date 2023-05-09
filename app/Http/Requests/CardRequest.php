@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
 class CardRequest extends FormRequest
@@ -27,5 +29,13 @@ class CardRequest extends FormRequest
         return [
             'type'=>['required','in:Visa,MasterCard,American Express']
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors()
+
+        ]),400);
     }
 }

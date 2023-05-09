@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Rules\PhonNumberRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentRequest extends FormRequest
@@ -37,5 +39,13 @@ class PaymentRequest extends FormRequest
             'user_name' =>['required_if:type,Request','exists:users,user_name'],
             'amount'=>['required','numeric','min:1'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors()
+
+        ]),400);
     }
 }

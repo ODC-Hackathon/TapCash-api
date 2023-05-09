@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -34,6 +36,13 @@ class AccountRequest extends FormRequest
         ];
     }
 
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors()
+
+        ]),400);
+    }
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
@@ -46,9 +55,12 @@ class AccountRequest extends FormRequest
         }
         if ($attempeted == false) {
             RateLimiter::hit($this->throttleKey());
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+            throw new HttpResponseException(response()->json([
+                'errors' => [
+                    'email' => __('auth.failed'),
+                ]
+
+            ]),400);
         }
         RateLimiter::clear($this->throttleKey());
     }

@@ -15,7 +15,6 @@ class AccountController extends BaseController
     public function profiles(AccountRequest $request)
     {
         $request->authenticate();
-        $request->authenticate();
 
         $account = Account::where('email',$request->email)
         ->select('user_id','email')
@@ -24,31 +23,17 @@ class AccountController extends BaseController
         },'user.family'])
         ->get();
 
+        Auth::guard('accounts')->user()?->tokens()?->delete();
+        
         $token = Auth::guard('accounts')
         ->user()
         ->createToken('Laravel Password Grant Client',['accounts'])->plainTextToken;
 
         return response()->json([
-                    'data'=>$account,
-                    'token' => $token,
+                    'data'=>[
+                        'account' => $account,
+                        'token' => $token
+                    ],
                 ],200);
-
-        // $credentials = $request->only('email','password');
-        // if(Auth::guard('accounts')->attempt($credentials,$request->boolean('remember')))
-        // {
-
-
-        //     $token = Auth::guard('accounts')->user()->createToken('Laravel Password Grant Client',['accounts'])->plainTextToken;
-        //     // Auth::guard('accounts')->logout();
-
-        //     return response()->json([
-        //         'data'=>$account,
-        //         'token' => $token,
-        //     ],200);
-        //     // return $this->success($account);
-        // }else
-        // {
-        //     return $this->error('please Verify your provided data');
-        // }
     }
 }

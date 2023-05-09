@@ -63,23 +63,31 @@ class Handler extends ExceptionHandler
     {
         if($e instanceof MissingAbilityException)
         {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['errors'=>[
+                'message'=>'Unauthorized'
+            ]], 401);
         }
 
 
         if($e instanceof NotFoundHttpException)
         {
-            return response()->json(['Message'=>'You are trying  access data not found'],404);
+            return response()->json(['errors'=>[
+                'message'=>'You are trying  access data not found'
+            ]],404);
         }
 
         if($e instanceof HttpException && $e->getMessage() === 'Your email address is not verified.')
         {
-            return response()->json(['Message'=>'Your Email Must be Verified first'],403);
+            return response()->json( ['errors'=>[
+                'message'=>'Your Email Must be Verified first'
+            ]],403);
         }
 
         if($e instanceof HttpException)
         {
-            return response()->json(['Message'=>'something went wrong please Contact with admin'],500);
+            return response()->json(['errors'=>[
+                'message'=>'something went wrong please Contact with admin'
+            ]],500);
         }
 
         return parent::render($request,$e);

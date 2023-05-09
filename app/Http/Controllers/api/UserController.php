@@ -110,4 +110,10 @@ class UserController extends BaseController
 
         return $transactions;
     }
+
+    public function getBalance(Request $request)
+    {
+        return $this->success($request->user->balance);
+    }
+
 }

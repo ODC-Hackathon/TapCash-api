@@ -57,9 +57,12 @@ class LoginRequest extends FormRequest
         }
         if ($attempeted === false) {
             RateLimiter::hit($this->throttleKey());
-            throw ValidationException::withMessages([
-                'username' => __('auth.failed'),
-            ]);
+            throw new HttpResponseException(response()->json([
+                'errors' => [
+                    'username' => __('auth.failed')
+                ]
+
+            ]),400);
         }
         RateLimiter::clear($this->throttleKey());
     }
@@ -101,11 +104,7 @@ class LoginRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
-            'success'   => false,
-
-            'message'   => 'Validation errors',
-
-            'data'      => $validator->errors()
+            'errors' => $validator->errors()
 
         ]),400);
     }

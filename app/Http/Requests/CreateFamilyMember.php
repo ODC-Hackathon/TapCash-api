@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Rules\PhonNumberRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
 class CreateFamilyMember extends FormRequest
@@ -34,5 +36,13 @@ class CreateFamilyMember extends FormRequest
             'percentage'=>['required','numeric','min:0'],
             'sponser'=>['required','exists:users,user_name']
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'errors' => $validator->errors()
+
+        ]),400);
     }
 }

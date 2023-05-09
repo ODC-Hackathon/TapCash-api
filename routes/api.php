@@ -52,25 +52,26 @@ Route::group(['middleware' => ['cors','json.response']], function ()
 
             Route::get('user/transactions',[UserController::class,'get_Transactions']);
             Route::get('family/{member:user_name}/transactions',[UserController::class,'get_member_transaction']);
-            Route::get('/balance',function(Request $request){
-                $user = User::find($request->user()->id);
-                // $user->deposit(1000,['method'=>'test']);
-                $transaction = Transaction::find(44);
-                return $user->wallet->confirm($transaction);
-                $last = User::find(6);
-                // $blanaced = $user->transfer($last,100);
-                // $test = new TransactionService();
-                // return $test->getUserId();
-                // $transactios= User::where('id',$user->id)->with(['transactions'=>function($query){
-                //     $query
-                //     ->select('type','amount','confirmed','payable_id','id');
-                // }])->get();
-                // return $transactios;
-                // $transfers= User::where('id',$user->id)->with(['transfers'=>function($query) use ($last){
-                //     $query->where('to_id',$last->wallet->id);
-                // }])->get();
-                return array('Vodafone Cash','Etisalat Cash','Orange Cash','Visa','Fawry');
-            });
+            Route::get('/user/balance',[UserController::class,'getBalance']);
+            // Route::get('/balance',function(Request $request){
+            //     $user = User::find($request->user()->id);
+            //     // $user->deposit(1000,['method'=>'test']);
+            //     $transaction = Transaction::find(44);
+            //     return $user->wallet->confirm($transaction);
+            //     $last = User::find(6);
+            //     // $blanaced = $user->transfer($last,100);
+            //     // $test = new TransactionService();
+            //     // return $test->getUserId();
+            //     // $transactios= User::where('id',$user->id)->with(['transactions'=>function($query){
+            //     //     $query
+            //     //     ->select('type','amount','confirmed','payable_id','id');
+            //     // }])->get();
+            //     // return $transactios;
+            //     // $transfers= User::where('id',$user->id)->with(['transfers'=>function($query) use ($last){
+            //     //     $query->where('to_id',$last->wallet->id);
+            //     // }])->get();
+            //     return array('Vodafone Cash','Etisalat Cash','Orange Cash','Visa','Fawry');
+            // });
 
         });
 

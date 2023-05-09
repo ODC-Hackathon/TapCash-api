@@ -64,9 +64,9 @@ class AuthenticationController extends BaseController
         $response=null;
         if(strcmp($request->type ,'user') ===0)
         {
-            $response= $this->create_token('api-users');
+            $response = $this->create_token('api-users');
         }elseif(strcmp($request->type ,'family') ===0){
-            $response= $this->create_token('api-family');
+            $response = $this->create_token('api-family');
         }
 
         Auth::guard('accounts')->user()?->tokens()?->delete();
@@ -101,6 +101,8 @@ class AuthenticationController extends BaseController
         $request->user()->tokens()->delete();
         Auth::guard('api-family')->logout();
 
-        return $this->success(null,'You have been successfully logged out!');
+        return $this->success([
+            'message'=>'You have been successfully logged out!'
+        ]);
     }
 }
