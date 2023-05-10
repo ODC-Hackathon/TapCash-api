@@ -124,6 +124,7 @@ class UserController extends BaseController
 
     public function getBalance(Request $request)
     {
+        return User::find($request->user()->id)->balance;
         return $this->success($request->user->balance);
     }
 

@@ -39,6 +39,7 @@ class AuthenticationController extends BaseController
                 'password'=>$request->password,
                 'user_id' => $user->id,
             ]);
+            
             Auth::guard('api-users')->login($user);
             $token = $user->createToken($request->phone_number,['api-users'])->plainTextToken;
             $response =

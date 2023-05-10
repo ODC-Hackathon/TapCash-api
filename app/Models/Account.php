@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,9 +39,15 @@ class Account extends Authenticatable implements MustVerifyEmail
 
     public function setEmailAttribute($value)
     {
-        $user = User::find($this->attributes['user_id']);
-        $user->email = $value;
-        $user->save();
+        try
+        {
+            $user = User::find($this->attributes['user_id']);
+            $user->email = $value;
+            $user->save();
+        }catch(Exception $e)
+        {
+        }
+
 
         $this->attributes['email'] = $value;
     }

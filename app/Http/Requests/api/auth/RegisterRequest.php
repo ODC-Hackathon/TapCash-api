@@ -3,6 +3,8 @@
 namespace App\Http\Requests\api\auth;
 
 use App\Rules\PhonNumberRule;
+use App\Rules\ValidateSSNRule;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
@@ -39,7 +41,7 @@ class RegisterRequest extends FormRequest
             ->symbols()
             ->uncompromised()
             ],
-            'SSN'=>['required','min:13','numeric'],
+            'SSN'=>['required','numeric','digits:14',new ValidateSSNRule()],
             'pincode'=>['required','numeric','min:3']
         ];
     }

@@ -16,7 +16,7 @@ use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Crypt;
 
-class User extends Authenticatable implements Wallet,WalletFloat,MustVerifyEmail
+class User extends Authenticatable implements Wallet,WalletFloat
 {
     use HasApiTokens, HasFactory, Notifiable,HasWalletFloat;
 
@@ -71,11 +71,11 @@ class User extends Authenticatable implements Wallet,WalletFloat,MustVerifyEmail
         return $this->hasOne(Card::class,'user_id','id');
     }
 
-    public function setSNNAttribute($value)
+    public function setSSNAttribute($value)
     {
-        $this->attributes['SNN'] = Crypt::encryptString($value);
+        $this->attributes['SSN'] = Crypt::encryptString($value);
     }
-    public function getSNNAttribute($value)
+    public function getSSNAttribute($value)
     {
         return  Crypt::decryptString($value);
     }
