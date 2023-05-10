@@ -73,8 +73,9 @@ class ForgetPasswordController extends Controller
             }
         );
 
-        return redirect($this->redirectPath())
-                    ->with('status', trans('passwords.reset'));
+        return response()->json([
+            'message'=> trans('passwords.reset')
+        ]);
     }
 
     /**

@@ -35,4 +35,13 @@ class Account extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function setEmailAttribute($value)
+    {
+        $user = User::find($this->attributes['user_id']);
+        $user->email = $value;
+        $user->save();
+
+        $this->attributes['email'] = $value;
+    }
 }

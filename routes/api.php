@@ -58,7 +58,7 @@ Route::group(['middleware' => ['cors','json.response']], function ()
             Route::get('/user/balance',[UserController::class,'getBalance']);
             Route::get('/user',[UserController::class,'get_UserData']);
             Route::put('/user/{user:id}',[UserController::class,'update_user_accountData']);
-
+            
             // Route::get('/balance',function(Request $request){
             //     $user = User::find($request->user()->id);
             //     // $user->deposit(1000,['method'=>'test']);

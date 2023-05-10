@@ -8,12 +8,14 @@ use App\Http\Requests\api\UpdateUserAccountData;
 use App\Http\Requests\api\UserServiceRequest;
 use App\Http\Requests\CreateFamilyMember;
 use App\Models\FamilyMember;
+use App\Models\MemberPermission;
 use App\Models\SubCategory;
 use App\Models\TransactionDetail;
 use App\Models\User;
 use App\Models\UserNotification;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
@@ -27,10 +29,10 @@ class UserController extends BaseController
 
     public function storeFamilyMember(CreateFamilyMember $request)
     {
-
         try
         {
-            FamilyMember::create([
+            DB::beginTransaction();
+            $member = FamilyMember::create([
                 'sponsor_id'=>User::where('user_name',$request->sponser)->first()->id,
                 'user_name' => $request->user_name,
                 'phone_number' => $request->phone_number,
@@ -38,9 +40,18 @@ class UserController extends BaseController
                 'pincode' => $request->pincode,
                 'name'=> $request->name,
             ]);
-            return $this->success(null);
+            MemberPermission::create([
+                'member_id' =>$member->id,
+                'permissions' => json_decode($request->permissions)
+            ]);
+
+            DB::commit();
+            return $this->success([
+                'message'=>'Family has been created'
+            ]);
         }catch(Exception $e)
         {
+            DB::rollBack();
             return $this->error($e->getMessage());
         }
 

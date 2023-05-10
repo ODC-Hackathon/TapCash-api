@@ -34,7 +34,8 @@ class CreateFamilyMember extends FormRequest
             'user_name'=>['required','unique:family_members,user_name','min:5'],
             'age'=>['required','numeric','min:10','max:16'],
             'percentage'=>['required','numeric','min:0'],
-            'sponser'=>['required','exists:users,user_name']
+            'sponser'=>['required','exists:users,user_name'],
+            'permissions'=>['required','json']
         ];
     }
 

@@ -79,11 +79,13 @@ class AuthenticationController extends BaseController
         $user = Auth::guard($guard)
         ->user();
         $user->tokens()?->delete();
+
         return  array([
             'user'=>
                     $user
                     ->where('id',$user->id)
-                    ->select('user_name','phone_number','name','id')->get(),
+                    ->select('user_name','phone_number','name','id')
+                    ->get(),
             'token'=>
                     $user->createToken('Laravel Password Grant Client',[$guard])
                     ->plainTextToken

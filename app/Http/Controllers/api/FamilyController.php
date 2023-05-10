@@ -73,5 +73,12 @@ class FamilyController extends BaseController
     {
         FamilyMember::where('id',$request->user()->id)->first();
     }
-    
+
+
+    public function update_familyMember(Request $request , )
+    {
+
+        
+    }
+
 }

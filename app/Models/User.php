@@ -115,4 +115,6 @@ class User extends Authenticatable implements Wallet,WalletFloat,MustVerifyEmail
             $query->select('name','category_id','id');
         }]);
     }
+
+
 }

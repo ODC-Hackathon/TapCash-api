@@ -60,4 +60,10 @@ class FamilyMember extends Authenticatable
         $this->hasMany(UserNotification::class,'family_id','id')
         ->select('message','type');
     }
+
+    public function permissions()
+    {
+        return $this->hasOne(MemberPermission::class,'member_id','id')
+        ->select('permissions','member_id');
+    }
 }
