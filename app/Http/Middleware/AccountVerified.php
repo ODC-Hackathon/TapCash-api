@@ -2,11 +2,15 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\api\ResendEmailVerify;
+use App\Jobs\api\SendVerificationEmail;
+use App\Jobs\SendEmailVerification;
 use App\Models\Account;
 use App\Models\FamilyMember;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
@@ -27,19 +31,19 @@ class AccountVerified
         if($user InstanceOf Account)
         {
             if(!$user->hasVerifiedEmail())
-                return $this->resend_email($request,$user);
+                return $this->resend_email($user);
                 // return response()->json(['errors'=>$message],$status);
         }
         elseif($user InstanceOf User)
         {
             if(!$user->account->hasVerifiedEmail())
-                return $this->resend_email($request,$user->account);
+                return $this->resend_email($user->account);
                 // return response()->json(['errors'=>$message],$status);
         }
         elseif($user InstanceOf FamilyMember)
         {
             if(!$user->sponser->account->hasVerifiedEmail())
-                    return $this->resend_email($request,$user->sponser->account);
+                    return $this->resend_email($user->sponser->account);
                 // return response()->json(['errors'=>$message],$status);
         }else if($user === null)
         {
@@ -48,7 +52,7 @@ class AccountVerified
             {
                 if(!$account->hasVerifiedEmail())
                 {
-                    return $this->resend_email($request,$account);
+                    return $this->resend_email($account);
                     // $account->sendEmailVerificationNotification();
                     // return response()->json(['errors'=>$message],$status);
                 }
@@ -58,20 +62,18 @@ class AccountVerified
         return $next($request);
     }
 
-    protected function resend_email(Request $request,$account)
+    protected function resend_email($account)
     {
         $status=400;
         $message = [
             'message'=>'please Verify your account email'
         ];
-        $response = Route::dispatch($request->create(env('APP_URL').'/api/email/verify/resend','post',[
-            'id'=>$account->id
-        ]));
-        // $response = Http::post(env('APP_URL').'/api/email/verify/resend',[
-        //     'id'=>$account->id,
-        // ]);
+        
+        $job = new SendEmailVerification($account);
+        Bus::dispatch($job);
 
-        // $account->sendEmailVerificationNotification();
-        return response()->json(['errors'=>$response],$status);
+        return response()->json(['errors'=>[
+            'message' => $message
+        ]],$status);
     }
 }

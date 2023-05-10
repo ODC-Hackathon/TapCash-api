@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum','json.response'])->group(function ()
 });
 
 Route::post('/email/verify/resend', function (Request $request){
-    return $request->only('errors');
+    return $request->all();
     $account = Account::find($request->id);
     $account->sendEmailVerificationNotification();
     return response()->json(['data'=>['message'=>'email has been sent']],200);
