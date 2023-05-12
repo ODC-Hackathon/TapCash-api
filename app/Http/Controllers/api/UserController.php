@@ -32,14 +32,17 @@ class UserController extends BaseController
         try
         {
             DB::beginTransaction();
+            $user  = User::where('user_name',$request->sponser)->first();
             $member = FamilyMember::create([
-                'sponsor_id'=>User::where('user_name',$request->sponser)->first()->id,
+                'sponsor_id'=>$user->id,
                 'user_name' => $request->user_name,
                 'phone_number' => $request->phone_number,
                 'percentage' => $request->percentage,
                 'pincode' => $request->pincode,
                 'name'=> $request->name,
+                'total_amount' => $user->balance * ($request->percentage / 100)
             ]);
+
             MemberPermission::create([
                 'member_id' =>$member->id,
                 'permissions' => json_decode($request->permissions)
@@ -171,5 +174,16 @@ class UserController extends BaseController
             return $this->error($e->getMessage());
         }
     }
+    public function get_MemberData(Request $request , FamilyMember $family)
+    {
+            return $this->success(
+                $family->where('id',$family->id)->select('name','user_name','phone_number')->get()
+            );
+    }
+    public function update_memberData(Request $request , FamilyMember $family)
+    {
+        
+    }
+
 
 }

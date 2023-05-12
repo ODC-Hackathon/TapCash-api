@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\api\FamilyServiceRequest;
+use App\Http\Requests\api\UpdateFamilyMember;
 use App\Http\Requests\StoreFamilyRequest;
 use App\Models\FamilyMember;
 use App\Models\SubCategory;
@@ -20,6 +21,8 @@ class FamilyController extends BaseController
     {
         try
         {
+
+
             $member = FamilyMember::where('user_name',$request->user_name)->first();
             $service = SubCategory::find($request->service);
             $transaction  = $member->sponser->withdraw(50);
@@ -75,10 +78,14 @@ class FamilyController extends BaseController
     }
 
 
-    public function update_familyMember(Request $request , )
+    public function update(UpdateFamilyMember $request , FamilyMember $family)
     {
+        $family->name = $request->name;
+        $family->phone_number = $request->phone_number;
+        $family->pincode = $request->pincode;
+        $family->save();
 
-        
+        return $this->success(['message'=>'Updated Successffully']);
     }
 
 }

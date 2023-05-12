@@ -58,12 +58,16 @@ Route::group(['middleware' => ['cors','json.response']], function ()
             Route::get('/user/balance',[UserController::class,'getBalance']);
             Route::get('/user',[UserController::class,'get_UserData']);
             Route::put('/user/{user:id}',[UserController::class,'update_user_accountData']);
+            Route::put('user/family/{family:user_name}',[UserController::class,'update_memberData']);
+            Route::get('user/family/{family:user_name}',[UserController::class,'get_MemberData']);
+
         });
 
         Route::group(['middleware'=>['abilities:api-family','family']],function(){
             Route::post('family/pay-service',[FamilyController::class,'CreateService']);
             Route::get('family/transactions',[FamilyController::class,'get_Transactions']);
             Route::get('family/notifications',[NotificationController::class,'index']);
+            Route::put('/family/{family:user_name}',[FamilyController::class,'update']);
         });
 
     });

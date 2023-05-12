@@ -14,7 +14,6 @@ class VerifyEmailController extends Controller
     //
     public function __invoke(Request $request)
     {
-
         $account = Account::find(User::find($request->route('id'))->account->id);
 
         if ($account->hasVerifiedEmail()) {
