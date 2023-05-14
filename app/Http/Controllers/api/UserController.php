@@ -15,6 +15,7 @@ use App\Models\SubCategory;
 use App\Models\TransactionDetail;
 use App\Models\User;
 use App\Models\UserNotification;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,6 @@ class UserController extends BaseController
             DB::beginTransaction();
             $user  = User::where('id',$request->user()->id)->first();
 
-
             $member = FamilyMember::create([
                 'sponsor_id'=>$user->id,
                 'user_name' => $request->user_name,
@@ -48,6 +48,7 @@ class UserController extends BaseController
                 'name'=> $request->name,
                 // 'total_amount' => $user->balance * ($request->percentage / 100),
                 'allowed_money' => $request->amount,
+                'amount_added' => now(),
             ]);
 
             MemberPermission::create([

@@ -32,7 +32,8 @@ Route::group(['middleware' => ['cors','json.response']], function ()
 
     Route::group(['middleware' => ['auth:sanctum','account.verify']],function(){
         Route::group(['middleware'=>['abilities:accounts'] ],function(){
-            Route::post('/', [AuthenticationController::class,'login'])
+
+            Route::post('/login', [AuthenticationController::class,'login'])
             ->name('login.api');
 
             Route::post('/forget-pincode/',[AccountController::class,'sentResetEmail']);
@@ -88,7 +89,7 @@ Route::middleware(['auth:sanctum','json.response'])->group(function ()
 
 
 Route::post('/email/verify/resend', function (Request $request){
-    
+
     $account = Account::find($request->id);
     $account->sendEmailVerificationNotification();
     return response()->json(['data'=>['message'=>'email has been sent']],200);

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone_number')->unique();
             $table->string('user_name')->unique();
             $table->string('pincode');
-            $table->string('SSN','14')->unique();
+            $table->text('SSN');
             $table->rememberToken();
             $table->timestamps();
         });
