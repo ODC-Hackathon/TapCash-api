@@ -36,7 +36,7 @@ class TransactionDetail extends Model
         ->belongsTo(User::class,'user_id','id');
     }
 
-    public function familymeember()
+    public function familymember()
     {
         return
         $this

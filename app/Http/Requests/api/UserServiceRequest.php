@@ -27,7 +27,7 @@ class UserServiceRequest extends FormRequest
         return [
             'service' =>['required','exists:sub_categories,id'],
             'amount' => ['required','numeric'],
-            'user_name'=>['required','exists:users,user_name'],
+            // 'user_name'=>['required','exists:users,user_name'],
         ];
     }
 }

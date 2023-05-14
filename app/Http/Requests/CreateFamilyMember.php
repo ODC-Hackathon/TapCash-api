@@ -27,14 +27,14 @@ class CreateFamilyMember extends FormRequest
      */
     public function rules()
     {
-        return [
+        return
+        [
             'name'=>['required','string','min:3'],
             'phone_number' => ['required',new PhonNumberRule(),'unique:family_members,phone_number'],
             'pincode'=>['required','numeric','min:3'],
             'user_name'=>['required','unique:family_members,user_name','min:5'],
             'age'=>['required','numeric','min:10','max:16'],
-            'percentage'=>['required','numeric','min:0'],
-            'sponser'=>['required','exists:users,user_name'],
+            'amount'=>['required','numeric','min:0'],
             'permissions'=>['required','json']
         ];
     }

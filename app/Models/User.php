@@ -103,7 +103,7 @@ class User extends Authenticatable implements Wallet,WalletFloat
     {
         return
         $this->hasMany(UserNotification::class,'user_id','id')
-        ->select('message','type');
+        ->select('message','type','id');
     }
     public function transaction_details()
     {

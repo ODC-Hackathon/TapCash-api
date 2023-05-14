@@ -27,7 +27,7 @@ class FamilyServiceRequest extends FormRequest
         return [
             'service' =>['required','exists:sub_categories,id'],
             'amount' => ['required','numeric'],
-            'user_name'=>['required','exists:family_members,user_name'],
+            // 'user_name'=>['required','exists:family_members,user_name'],
         ];
     }
 }

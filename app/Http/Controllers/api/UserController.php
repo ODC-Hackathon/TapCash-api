@@ -6,9 +6,11 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\api\UpdateUserAccountData;
 use App\Http\Requests\api\UserServiceRequest;
+use App\Http\Requests\api\UserUpdateMemberRequest;
 use App\Http\Requests\CreateFamilyMember;
 use App\Models\FamilyMember;
 use App\Models\MemberPermission;
+use App\Models\PinCodeReset;
 use App\Models\SubCategory;
 use App\Models\TransactionDetail;
 use App\Models\User;
@@ -18,7 +20,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 class UserController extends BaseController
 {
     public function get_users(Request $request)
@@ -32,15 +36,18 @@ class UserController extends BaseController
         try
         {
             DB::beginTransaction();
-            $user  = User::where('user_name',$request->sponser)->first();
+            $user  = User::where('id',$request->user()->id)->first();
+
+
             $member = FamilyMember::create([
                 'sponsor_id'=>$user->id,
                 'user_name' => $request->user_name,
                 'phone_number' => $request->phone_number,
-                'percentage' => $request->percentage,
+                // 'percentage' => $request->percentage,
                 'pincode' => $request->pincode,
                 'name'=> $request->name,
-                'total_amount' => $user->balance * ($request->percentage / 100)
+                // 'total_amount' => $user->balance * ($request->percentage / 100),
+                'allowed_money' => $request->amount,
             ]);
 
             MemberPermission::create([
@@ -66,7 +73,7 @@ class UserController extends BaseController
     {
         try
         {
-            $user  = User::where('user_name',$request->user_name)->first();
+            $user  = User::where('id',$request->user()->id)->first();
             $service = SubCategory::find($request->service);
             $transaction = $user->withdraw($request->amount);
 
@@ -84,7 +91,7 @@ class UserController extends BaseController
                 'transaction_id'=>$transaction->id,
             ]);
 
-            return $this->success(null);
+            return $this->success(['message'=>'the service has been bought successfully']);
         }catch(Exception $e)
         {
             return $this->error($e->getMessage());
@@ -113,7 +120,7 @@ class UserController extends BaseController
     {
         try
         {
-            $transactions = $member->with(['transaction_details'])
+            $transactions = FamilyMember::where('id',$member->id)->with(['transaction_details'])
             ->select('id','user_name')
             ->first();
             return $this->success($transactions);
@@ -177,13 +184,23 @@ class UserController extends BaseController
     public function get_MemberData(Request $request , FamilyMember $family)
     {
             return $this->success(
-                $family->where('id',$family->id)->select('name','user_name','phone_number')->get()
+                $family->where('id',$family->id)->select('name','allowed_money','spent_money')->get()
             );
     }
-    public function update_memberData(Request $request , FamilyMember $family)
+    public function update_memberData(UserUpdateMemberRequest $request , FamilyMember $family)
     {
-        
-    }
 
+        $family->allowed_money = $request->amount;
+        if($request->pincode !="")
+            $family->pincode = $request->pincode;
+
+        if($family->isDirty('allowed_money'))
+            $family->amount_added = now();
+
+        $family->save();
+        return $this->success([
+            'message' => 'Data has been updated successfully'
+        ]);
+    }
 
 }

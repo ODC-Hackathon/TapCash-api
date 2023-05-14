@@ -13,9 +13,14 @@ class FamilyMember extends Authenticatable
     protected $fillable=
     [
         'name','sponsor_id'
-        ,'user_name','phone_number','total_amount','percentage',
-        'family_id',
+        ,'user_name','phone_number'
+        // ,'total_amount'
+        // ,'percentage'
+        ,'family_id',
         'pincode',
+        'amount_added',
+        'allowed_money',
+        'spent_money'
     ];
     protected $hidden = [
         'password',
@@ -60,7 +65,7 @@ class FamilyMember extends Authenticatable
     {
         return
         $this->hasMany(UserNotification::class,'family_id','id')
-        ->select('message','type');
+        ->select('message','type','id');
     }
 
     public function permissions()
@@ -68,4 +73,5 @@ class FamilyMember extends Authenticatable
         return $this->hasOne(MemberPermission::class,'member_id','id')
         ->select('permissions','member_id');
     }
+    
 }

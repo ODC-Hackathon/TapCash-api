@@ -31,43 +31,48 @@ Route::group(['middleware' => ['cors','json.response']], function ()
     ->name('verification.verify');
 
     Route::group(['middleware' => ['auth:sanctum','account.verify']],function(){
-
         Route::group(['middleware'=>['abilities:accounts'] ],function(){
-            Route::post('/login', [AuthenticationController::class,'login'])
+            Route::post('/', [AuthenticationController::class,'login'])
             ->name('login.api');
+
+            Route::post('/forget-pincode/',[AccountController::class,'sentResetEmail']);
+
         });
 
         Route::group(['middleware'=>['abilities:api-users','users']],function(){
-            Route::post('/card/generate',[CardController::class,'create'])
-            ->name('generate.card');
-
-            Route::get('/card',[CardController::class,'get_card'])->name('get.card');
-
             Route::get('/payments/types',[PaymentController::class,'get_payment_methods']);
-
             Route::get('users/',[UserController::class,'get_users']);
-            Route::post('/add-money',[PaymentController::class,'AddMoney']);
-            Route::post('/payment/confirm',[PaymentController::class,'ConfirmPayment']);
-            Route::get('/user/notifcations',[NotificationController::class,'index'])->name('user.notifications');
-            Route::post('/user/send-money',[PaymentController::class,'SendMoney']);
-            Route::post('/user/create-family-member',[UserController::class,'storeFamilyMember']);
-            Route::post('/user/pay-service',[UserController::class,'createservice']);
 
-            Route::get('user/transactions',[UserController::class,'get_Transactions']);
-            Route::get('family/{member:user_name}/transactions',[UserController::class,'get_member_transaction']);
-            Route::get('/user/balance',[UserController::class,'getBalance']);
-            Route::get('/user',[UserController::class,'get_UserData']);
-            Route::put('/user/{user:id}',[UserController::class,'update_user_accountData']);
-            Route::put('user/family/{family:user_name}',[UserController::class,'update_memberData']);
-            Route::get('user/family/{family:user_name}',[UserController::class,'get_MemberData']);
+            Route::prefix('user')->group(function () {
+                Route::post('/card/generate',[CardController::class,'create'])
+                ->name('generate.card');
+                Route::get('/card',[CardController::class,'get_card'])->name('get.card');
 
+                Route::post('add-money',[PaymentController::class,'AddMoney']);
+                Route::post('payment/confirm',[PaymentController::class,'ConfirmPayment']);
+                Route::get('notifcations',[NotificationController::class,'index'])->name('user.notifications');
+                Route::post('send-money',[PaymentController::class,'SendMoney']);
+                Route::post('create-family-member',[UserController::class,'storeFamilyMember']);
+                Route::post('pay-service',[UserController::class,'createservice']);
+                Route::get('transactions',[UserController::class,'get_Transactions']);
+                Route::get('family/{member:user_name}/transactions',[UserController::class,'get_member_transaction']);
+                Route::get('balance',[UserController::class,'getBalance']);
+                Route::get('Profile',[UserController::class,'get_UserData']);
+                Route::put('{user:id}',[UserController::class,'update_user_accountData']);
+                Route::put('family/{family:user_name}',[UserController::class,'update_memberData']);
+                Route::get('family/{family:user_name}',[UserController::class,'get_MemberData']);
+
+            });
         });
 
-        Route::group(['middleware'=>['abilities:api-family','family']],function(){
-            Route::post('family/pay-service',[FamilyController::class,'CreateService']);
-            Route::get('family/transactions',[FamilyController::class,'get_Transactions']);
-            Route::get('family/notifications',[NotificationController::class,'index']);
-            Route::put('/family/{family:user_name}',[FamilyController::class,'update']);
+        Route::group(['middleware'=>['abilities:api-family','family'] , 'prefix'=>'family'],function(){
+
+            Route::post('pay-service',[FamilyController::class,'CreateService']);
+            Route::get('transactions',[FamilyController::class,'get_Transactions']);
+            Route::get('notifications',[NotificationController::class,'index']);
+            Route::put('profile/update',[FamilyController::class,'update']);
+            Route::get('/prfoile',[FamilyController::class,'get_details']);
+
         });
 
     });
@@ -77,13 +82,13 @@ Route::group(['middleware' => ['cors','json.response']], function ()
 
 Route::middleware(['auth:sanctum','json.response'])->group(function ()
 {
-
     Route::post('/logout', [AuthenticationController::class,'logout'])
     ->name('logout.api');
 });
 
+
 Route::post('/email/verify/resend', function (Request $request){
-    return $request->all();
+    
     $account = Account::find($request->id);
     $account->sendEmailVerificationNotification();
     return response()->json(['data'=>['message'=>'email has been sent']],200);

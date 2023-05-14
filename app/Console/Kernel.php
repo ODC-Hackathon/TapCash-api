@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Jobs\CardExpireRemoveJob;
+use App\Jobs\updateMoneyFamilyMember;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->job(new CardExpireRemoveJob())->everyMinute();
+        $schedule->job(new updateMoneyFamilyMember())->everyMinute();
     }
 
     /**

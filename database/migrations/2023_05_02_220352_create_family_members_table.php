@@ -19,9 +19,12 @@ return new class extends Migration
             $table->string('user_name')->unique();
             $table->foreignId('sponsor_id')->constrained('users','id')->cascadeOnDelete();
             $table->string('name');
-            $table->decimal('percentage',5,2);
-            $table->decimal('total_amount',10,2)->nullable();
+            // $table->decimal('percentage',5,2);
+            // $table->decimal('total_amount',10,2)->nullable();
             $table->string('pincode');
+            $table->date("amount_added");
+            $table->decimal("allowed_money")->default(0);
+            $table->decimal("spent_money")->default(0);
             // $table->unique(['user_name','sponsor_id']);
             $table->rememberToken();
             $table->timestamps();

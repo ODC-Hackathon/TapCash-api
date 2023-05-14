@@ -3,6 +3,7 @@
 namespace App\Rules\api;
 
 use App\Models\FamilyMember;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,9 +15,12 @@ class CheckAccountPasswordRule implements Rule
      * @return void
      */
     protected $account ;
-    public function __construct($MemberID)
+    public function __construct($user)
     {
-        $this->account = FamilyMember::find($MemberID)->sponser->account;
+        if($user instanceof FamilyMember)
+            $this->account = FamilyMember::find($user->id)->sponser->account;
+        elseif($user InstanceOf User)
+            $this->account = User::find($user->id)->account;
     }
 
     /**
@@ -28,8 +32,6 @@ class CheckAccountPasswordRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
-
         if(!Hash::check($value,$this->account->password))
             return false;
 

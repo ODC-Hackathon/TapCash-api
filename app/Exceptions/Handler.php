@@ -86,7 +86,7 @@ class Handler extends ExceptionHandler
         if($e instanceof HttpException)
         {
             return response()->json(['errors'=>[
-                'message'=>'something went wrong please Contact with admin'
+                'message'=>$e->getMessage()
             ]],500);
         }
 

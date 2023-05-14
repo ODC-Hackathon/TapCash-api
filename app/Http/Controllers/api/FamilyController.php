@@ -11,44 +11,37 @@ use App\Models\FamilyMember;
 use App\Models\SubCategory;
 use App\Models\TransactionDetail;
 use App\Models\UserNotification;
+use App\Traits\FamilyMemberServices;
+use App\Traits\FamilyMemberTrait;
+use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 
 class FamilyController extends BaseController
 {
-
+    use FamilyMemberServices;
     public function CreateService(FamilyServiceRequest $request)
     {
+
         try
         {
 
+            $member = FamilyMember::where('id',$request->user()->id)->first();
+            if($request->amount > $this->get_remainingMoney($member))
+                return $this->error('Sorry You have spent The amount allowed u in this month');
 
-            $member = FamilyMember::where('user_name',$request->user_name)->first();
             $service = SubCategory::find($request->service);
-            $transaction  = $member->sponser->withdraw(50);
+            $transaction  = $member->sponser->withdraw($request->amount);
 
-            $transaction_detail = TransactionDetail::create([
-                'type'=>$service->name,
-                'transaction_id'=>$transaction->id,
-                'subcategory_id'=>$request->service,
-                'familymember_id' => $member->id,
+            $this->send_notification($member,$transaction,$service);
+            $this->create_transaction($member,$transaction,$service);
+            $this->money_update($member,$request->amount);
+
+            return $this->success([
+                'message' => 'You have paied for this service '.$service->name
             ]);
 
-            $notification = UserNotification::create([
-                'message' => $member->user_name  . ' has bought new '.$service->name . ' with $' . abs($transaction->amount)  .' At '. now()->format('d-m-y'),
-                'type' =>'purchased',
-                'user_id' => $member->sponser->id,
-                'transaction_id'=>$transaction->id,
-            ]);
-
-            $notification = UserNotification::create([
-                'message' => 'You have purchased '.$service->name . ' with $' . abs($transaction->amount)  .' At '. now()->format('d-m-y'),
-                'type' =>'purchased',
-                'familymember_id' => $member->id,
-                'transaction_id'=>$transaction->id,
-            ]);
-
-            return $this->success(null);
         }catch(Exception $e)
         {
             return $this->error($e->getMessage());
@@ -72,20 +65,26 @@ class FamilyController extends BaseController
         }
     }
 
-    public function get_notifications(Request $request)
+    public function update(UpdateFamilyMember $request)
     {
-        FamilyMember::where('id',$request->user()->id)->first();
+
+            $family = FamilyMember::find($request->user()->id);
+            $family->name = $request->name;
+            $family->phone_number = $request->phone_number;
+            $family->pincode = $request->pincode;
+            $family->save();
+
+            return $this->success(['message'=>'Updated Successffully']);
     }
 
-
-    public function update(UpdateFamilyMember $request , FamilyMember $family)
+    public function get_details(Request $request)
     {
-        $family->name = $request->name;
-        $family->phone_number = $request->phone_number;
-        $family->pincode = $request->pincode;
-        $family->save();
-
-        return $this->success(['message'=>'Updated Successffully']);
+        $family = FamilyMember::where('id',$request->user()->id)
+                    ->select('name','user_name','phone_number','spent_money')
+                    ->get();
+        return $this->success([
+            'member' => $family
+        ]);
     }
 
 }

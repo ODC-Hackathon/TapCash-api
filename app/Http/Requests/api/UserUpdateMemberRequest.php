@@ -6,9 +6,8 @@ use App\Rules\api\CheckAccountPasswordRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\Rule;
 
-class UpdateFamilyMember extends FormRequest
+class UserUpdateMemberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +16,7 @@ class UpdateFamilyMember extends FormRequest
      */
     public function authorize()
     {
-        return Auth::guard('api-family')->check() ? true : false;
+        return Auth::guard('api-users')->check() ? true : false;
     }
 
     /**
@@ -27,16 +26,16 @@ class UpdateFamilyMember extends FormRequest
      */
     public function rules()
     {
-        $memberID = $this->user()->id;
+        $user = $this->user();
         return [
-            'phone_number'=>['required',Rule::unique('family_members','phone_number')->ignore($memberID)],
-            'name' => ['required','string','min:3'],
-            'password' => ['required', Password::min(8)
+            'pincode'=>['required','numeric','min:3'],
+            'amount'=>['required','numeric','min:0'],
+            'password'=>['required',Password::min(8)
             ->mixedCase()
             ->letters()
             ->symbols()
-            ->uncompromised(), new CheckAccountPasswordRule($this->user())],
-            'pincode'=>['required','numeric','min:3'
+            ->uncompromised(),
+            new CheckAccountPasswordRule($user)
             ]
         ];
     }
